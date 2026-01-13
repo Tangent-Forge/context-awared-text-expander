@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #f5f5f5;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      margin: 8px 0 0 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .section h2 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      color: #333;
+      border-bottom: 2px solid #9C27B0;
+      padding-bottom: 8px;
+    }
+    
+    .shortcut-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .shortcut-item {
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .shortcut-item:hover {
+      border-color: #9C27B0;
+      background: #F3E5F5;
+    }
+    
+    .shortcut-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .shortcut-abbreviation {
+      font-weight: 700;
+      color: #9C27B0;
+      font-size: 18px;
+    }
+    
+    .shortcut-category {
+      background: #F3E5F5;
+      color: #7B1FA2;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    
+    .shortcut-expansion {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .shortcut-meta {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
+    
+    .template-card {
+      background: #f9f9f9;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    
+    .template-card:hover {
+      border-color: #9C27B0;
+      background: #F3E5F5;
+    }
+    
+    .template-name {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .template-desc {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .stat-card {
+      background: #f9f9f9;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #9C27B0;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .btn-primary {
+      background-color: #9C27B0;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #7B1FA2;
+    }
+    
+    .btn-secondary {
+      background-color: #757575;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #616161;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    .error {
+      background-color: #ffebee;
+      color: #c62828;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>✏️ Context-Awared Text Expander</h1>
+    <p>Smart text shortcuts that adapt to context</p>
+  </div>
+
+  <div id="loading" class="loading">Loading...</div>
+  <div id="error" class="error hidden"></div>
+  <div id="success" class="success hidden"></div>
+
+  <div id="content" class="hidden">
+    <!-- Stats Section -->
+    <div class="section">
+      <h2>📊 Statistics</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-shortcuts">0</div>
+          <div class="stat-label">Total Shortcuts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-usage">0</div>
+          <div class="stat-label">Total Usage</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-templates">0</div>
+          <div class="stat-label">Templates</div>
+        </div>
+        <div class="stat-card">
+          <div="stat-value" id="stat-popular">N/A</div>
+          <div class="stat-label">Most Used</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Shortcut -->
+    <div class="section">
+      <h2➕ Create New Shortcut</h2>
+      <div class="form-group">
+        <label for="shortcut-abbreviation">Abbreviation</label>
+        <input type="text" id="shortcut-abbreviation" placeholder="e.g., ty">
+      </div>
+      <div class="form-group">
+        <label for="shortcut-expansion">Expansion</label>
+        <textarea id="shortcut-expansion" rows="4" placeholder="e.g., Thank you for your message..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="shortcut-category">Category</label>
+        <select id="shortcut-category">
+          <option value="General">General</option>
+          <option value="Email">Email</option>
+          <option value="Meeting">Meeting</option>
+          <option value="Code">Code</option>
+          <option value="Support">Support</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="createShortcut()">Create Shortcut</button>
+    </div>
+
+    <!-- Shortcuts List -->
+    <div class="section">
+      <h2>📝 Your Shortcuts</h2>
+      <ul class="shortcut-list" id="shortcut-list">
+        <!-- Shortcuts will be loaded here -->
+      </ul>
+    </div>
+
+    <!-- Templates -->
+    <div class="section">
+      <h2>📋 Templates</h2>
+      <div id="template-list">
+        <!-- Templates will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let shortcuts = [];
+    let templates = [];
+
+    function loadData() {
+      showLoading('Loading data...');
+      
+      google.script.run
+        .withSuccessHandler(function(data) {
+          hideLoading();
+          updateStats(data.stats);
+          shortcuts = data.shortcuts;
+          updateShortcutList();
+          templates = data.templates;
+          updateTemplateList();
+        })
+        .withFailureHandler(function(error) {
+          hideLoading();
+          showError('Failed to load data: ' + error.message);
+        })
+        .call(function() {
+          return {
+            stats: AnalyticsTracker.getUsageStats(),
+            shortcuts: getShortcuts(),
+            templates: getTemplates()
+          };
+        });
+    }
+
+    function updateStats(stats) {
+      document.getElementById('stat-shortcuts').textContent = stats.totalShortcuts;
+      document.getElementById('stat-usage').textContent = stats.totalUsage;
+      document.getElementById('stat-templates').textContent = templates.length;
+      document.getElementById('stat-popular').textContent = stats.mostUsed ? stats.mostUsed.abbreviation : 'N/A';
+    }
+
+    function updateShortcutList() {
+      const list = document.getElementById('shortcut-list');
+      list.innerHTML = '';
+      
+      if (shortcuts.length === 0) {
+        list.innerHTML = '<li style="text-align:center; padding:20px; color:#999;">No shortcuts created yet</li>';
+        return;
+      }
+      
+      shortcuts.sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0)).forEach(shortcut => {
+        const li = document.createElement('li');
+        li.className = 'shortcut-item';
+        li.onclick = () => showShortcutDetails(shortcut);
+        
+        li.innerHTML = `
+          <div class="shortcut-header">
+            <span class="shortcut-abbreviation">${shortcut.abbreviation}</span>
+            <span class="shortcut-category">${shortcut.category}</span>
+          </div>
+          <div class="shortcut-expansion">${shortcut.expansion.substring(0, 60)}${shortcut.expansion.length > 60 ? '...' : ''}</div>
+          <div class="shortcut-meta">
+            Used: ${shortcut.usageCount || 0} times | Last used: ${shortcut.lastUsed ? new Date(shortcut.lastUsed).toLocaleDateString() : 'Never'}
+          </div>
+        `;
+        
+        list.appendChild(li);
+      });
+    }
+
+    function updateTemplateList() {
+      const list = document.getElementById('template-list');
+      list.innerHTML = '';
+      
+      if (templates.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#999;">No templates available</p>';
+        return;
+      }
+      
+      templates.forEach(template => {
+        const div = document.createElement('div');
+        div.className = 'template-card';
+        div.onclick = () => applyTemplate(template.id);
+        div.innerHTML = `
+          <div class="template-name">${template.name}</div>
+          <div class="template-desc">${template.content.substring(0, 60)}${template.content.length > 60 ? '...' : ''}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function createShortcut() {
+      const abbreviation = document.getElementById('shortcut-abbreviation').value;
+      const expansion = document.getElementById('shortcut-expansion').value;
+      const category = document.getElementById('shortcut-category').value;
+      
+      if (!abbreviation || !expansion) {
+        showError('Please enter both abbreviation and expansion');
+        return;
+      }
+      
+      showLoading('Creating shortcut...');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+          showSuccess('Shortcut created successfully');
+          document.getElementById('shortcut-abbreviation').value = '';
+          document.getElementById('shortcut-expansion').value = '';
+          loadData();
+        })
+        .withFailureHandler(function(error) {
+          hideLoading();
+          showError('Failed to create shortcut: ' + error.message);
+        })
+        .createShortcut({
+          abbreviation: abbreviation,
+          expansion: expansion,
+          category: category
+        });
+    }
+
+    function showShortcutDetails(shortcut) {
+      alert(`Abbreviation: ${shortcut.abbreviation}\n\nExpansion:\n${shortcut.expansion}\n\nCategory: ${shortcut.category}\nUsed: ${shortcut.usageCount || 0} times`);
+    }
+
+    function applyTemplate(templateId) {
+      showLoading('Applying template...');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+          alert(`Template content:\n\n${result.content}`);
+        })
+        .withFailureHandler(function(error) {
+          hideLoading();
+          showError('Failed to apply template: ' + error.message);
+        })
+        .applyTemplate(templateId, {});
+    }
+
+    function showLoading(message) {
+      document.getElementById('loading').textContent = message;
+      document.getElementById('loading').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').classList.add('hidden');
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('error');
+      errorDiv.textContent = message;
+      errorDiv.classList.remove('hidden');
+      setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+    }
+
+    function showSuccess(message) {
+      const successDiv = document.getElementById('success');
+      successDiv.textContent = message;
+      successDiv.classList.remove('hidden');
+      setTimeout(() => successDiv.classList.add('hidden'), 3000);
+    }
+
+    // Initialize
+    loadData();
+  </script>
+</body>
+</html>

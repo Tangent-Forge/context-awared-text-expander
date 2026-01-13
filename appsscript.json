@@ -1,0 +1,29 @@
+{
+  "timeZone": "America/Los_Angeles",
+  "dependencies": {},
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/script.container.ui"
+  ],
+  "addOns": {
+    "common": {
+      "name": "Context-Awared Text Expander",
+      "logoUrl": "https://www.gstatic.com/images/icons/material/system/1x/text_fields_black_24dp.png",
+      "layoutProperties": {
+        "primaryColor": "#9C27B0",
+        "secondaryColor": "#F3E5F5"
+      },
+      "homepageTrigger": {
+        "runFunction": "onOpen"
+      }
+    },
+    "docs": {
+      "homepageTrigger": {
+        "runFunction": "onOpen"
+      }
+    }
+  }
+}
